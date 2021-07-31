@@ -1,0 +1,37 @@
+type User {
+  id: ID
+  name: String
+  email: String
+  phone: String
+  posts: [Post]
+}
+type Post {
+  id: ID
+  title: String
+  year: Int
+}
+input UserInput{
+  id: ID
+  name: String!
+  email: String!
+  phone: String!
+  posts: [PostInput]
+}
+input PostInput{
+  id: ID
+  title: String!
+  year: Int!
+}
+type Query {
+  getAllUsers: [User]
+  getUser(id: ID): User
+}
+type Mutation{
+ createUser(input:UserInput):User
+ updateUser(id:ID,input:UserInput):User
+ addPost(id:ID,input:PostInput):User
+ removePost(id:ID,index:ID):User
+}
+type Subscription{
+ newUser:User!
+}
