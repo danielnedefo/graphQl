@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState,useEffect } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import { GET_ALL_USERS } from "./graphQl/getAllUsers";
 import { CREATE_USER } from "./graphQl/createUser";
+import { SUBSCRIBE_USER } from "./graphQl/subscribeUser";
 import AddUserForm from "./forms/addUser";
 
 const initialState = {
@@ -11,7 +12,18 @@ const initialState = {
 };
 const Test = () => {
   const [user, setUser] = useState(initialState);
-  const { data, loading } = useQuery(GET_ALL_USERS);
+  const { data, loading,subscribeToMore,error } = useQuery(GET_ALL_USERS);
+  useEffect(()=> subscribeToMore({
+    document:SUBSCRIBE_USER,
+    updateQuery:(prev,{subscriptionData}) => {
+      if(!subscriptionData.data) return prev
+      const newUser = subscriptionData.data.newUser
+      console.log(newUser)
+      return {
+        getAllUsers:[...prev.getAllUsers,newUser]
+      }
+    }
+  }),[subscribeToMore])
   const [newUser] = useMutation(CREATE_USER);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -22,13 +34,12 @@ const Test = () => {
   };
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(user);
     newUser({
       variables: {
         input: user,
       },
     })
-      .then(({ data }) => console.log(data))
+      .then((data) =>console.log(data))
       .catch((error) => console.log(error));
     setUser(initialState);
   };

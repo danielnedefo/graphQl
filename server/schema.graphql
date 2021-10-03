@@ -33,5 +33,5 @@ type Mutation{
  removePost(id:ID,index:ID):User
 }
 type Subscription{
- newUser:User!
+ newUser(id:Id)User!
 }

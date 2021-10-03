@@ -6,6 +6,7 @@ export const GET_ALL_USERS = gql`
       name,
       email,
       phone,
+      _id
     }
   }
 `;
